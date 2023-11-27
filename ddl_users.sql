@@ -1,3 +1,5 @@
+USE microbialites;
+
 CREATE TABLE User (
     UserID INT PRIMARY KEY,
     LogInID VARCHAR(255) UNIQUE,
