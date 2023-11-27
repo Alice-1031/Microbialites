@@ -1,1 +1,3 @@
 CREATE DATABASE microbialites;
+
+CREATE TABLE Test;
