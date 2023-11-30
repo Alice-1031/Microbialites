@@ -3,15 +3,15 @@ USE microbialites;
 CREATE TABLE User (
     UserID INT PRIMARY KEY,
     LogInID VARCHAR(255) UNIQUE,
-    HashedPassword VARCHAR(255),
+    HashedPassword VARCHAR(255) NOT NULL,
     RoleID INT,
     FOREIGN KEY (RoleID) REFERENCES UserRole(RoleID)
 );
 
 CREATE TABLE UserInteractions (
     InteractionID INT PRIMARY KEY,
-    UserID INT,
-    InteractionTimeStamp DATETIME,
+    UserID INT NOT NULL,
+    InteractionTimeStamp DATETIME NOT NULL,
     SubEntityType VARCHAR(255),
     SubEntityID INT,
     FOREIGN KEY (UserID) REFERENCES User(UserID),
@@ -20,10 +20,10 @@ CREATE TABLE UserInteractions (
 
 CREATE TABLE CustomerSupport (
     TicketID INT PRIMARY KEY,
-    UserID INT,
+    UserID INT NOT NULL,
     AssignedToUserID INT,
     Description TEXT,
-    Status VARCHAR(50),
+    Status VARCHAR(50) NOT NULL,
     FOREIGN KEY (UserID) REFERENCES User(UserID),
     FOREIGN KEY (AssignedToUserID) REFERENCES User(UserID)
 );
@@ -40,7 +40,7 @@ CREATE TABLE UserRole (
 
 CREATE TABLE Role (
     RoleID INT PRIMARY KEY,
-    RoleName VARCHAR(255),
+    RoleName VARCHAR(255) NOT NULL,
     RoleDescription TEXT
 );
 
@@ -55,6 +55,6 @@ CREATE TABLE RolePermissions (
 
 CREATE TABLE Permissions (
     PermissionID INT PRIMARY KEY,
-    PermissionName VARCHAR(255),
+    PermissionName VARCHAR(255) NOT NULL,
     PermissionDescription TEXT
 );
