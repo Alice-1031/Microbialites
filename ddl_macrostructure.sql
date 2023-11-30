@@ -14,10 +14,10 @@ CREATE TABLE MacroStructurePhotos (
     InReport BOOLEAN,
     OutcropPhoto BOOLEAN,
     Photomicrograph BOOLEAN,
-    OtherImage BOOLEAN,
+    OtherImage BOO LEAN,
     CLImage BOOLEAN,
     OtherDocument BOOLEAN,
-    ReferenceLink VARCHAR(255),
+    ReferenceLink VARCHAR(255) NOT NULL,
     PRIMARY KEY (MacroStructureID, PhotoID),
     FOREIGN KEY (MacroStructureID) REFERENCES MacroStructure(MacrostructureID),
     FOREIGN KEY (WaypointID) REFERENCES Waypoint(WayptID)
@@ -71,28 +71,30 @@ CREATE TABLE MacroStructureProperties (
 );
 
 CREATE TABLE MegaStructureType (
-    TypeID INT PRIMARY KEY,
-    Type VARCHAR(255)
+    TypeID INT AUTO_INCREMENT PRIMARY KEY,
+    Type VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE MegastructureShape (
-    ShapeID INT PRIMARY KEY,
-    Shape VARCHAR(255)
+    ShapeID INT AUTO_INCREMENT PRIMARY KEY,
+    Shape VARCHAR(255) NOT NULL,
+    SortOrder INT AUTO_INCREMENT
 );
 
 CREATE TABLE MegaStructureSize (
     SizeID INT PRIMARY KEY,
-    Size VARCHAR(255)
+    SizeName VARCHAR(255) NOT NULL,
+    SortOrder INT AUTO_INCREMENT
 );
 
 CREATE TABLE Substrate (
-    SubstrateID INT PRIMARY KEY,
-    SubstrateName VARCHAR(255)
+    SubstrateID INT AUTO_INCREMENT PRIMARY KEY,
+    SubstrateName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE PlanView (
-    PlanViewID INT PRIMARY KEY,
-    PlanViewName VARCHAR(255)
+    PlanViewID INT AUTO_INCREMENT PRIMARY KEY,
+    PlanViewName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Linkage (
@@ -101,73 +103,74 @@ CREATE TABLE Linkage (
 );
 
 CREATE TABLE Initiation (
-    InitiationID INT PRIMARY KEY,
-    InitiationName VARCHAR(255)
+    InitiationID INT AUTO_INCREMENT PRIMARY KEY,
+    InitiationName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Spacing (
-    SpacingID INT PRIMARY KEY,
-    SpacingName VARCHAR(255)
+    SpacingID INT AUTO_INCREMENT PRIMARY KEY,
+    SpacingName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Shape (
-    ShapeID INT PRIMARY KEY,
-    ShapeName VARCHAR(255)
+    ShapeID INT AUTO_INCREMENT PRIMARY KEY,
+    ShapeName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE ShapeLayering (
-    ShapeLayeringID INT PRIMARY KEY,
-    ShapeLayeringName VARCHAR(255)
+    ShapeLayeringID INT AUTO_INCREMENT PRIMARY KEY,
+    ShapeLayeringName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE ColumnShape (
-    ColumnShapeID INT PRIMARY KEY,
-    ColumnShapeName VARCHAR(255)
+    ColumnShapeID INT AUTO_INCREMENT PRIMARY KEY,
+    ColumnShapeName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE ShapeDome (
-    ShapeDomeID INT PRIMARY KEY,
-    ShapeDomeName VARCHAR(255)
+    ShapeDomeID INT AUTO_INCREMENT PRIMARY KEY,
+    ShapeDomeName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE ConicalShape (
-    ConicalShapeID INT PRIMARY KEY,
-    ConicalShapeName VARCHAR(255)
+    ConicalShapeID INT AUTO_INCREMENT PRIMARY KEY,
+    ConicalShapeName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Attitude (
-    AttitudeID INT PRIMARY KEY,
-    AttitudeName VARCHAR(255)
+    AttitudeID INT AUTO_INCREMENT PRIMARY KEY,
+    AttitudeName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE BranchingStyle (
-    BranchingStyleID INT PRIMARY KEY,
-    BranchingStyleName VARCHAR(255)
+    BranchingStyleID INT AUTO_INCREMENT PRIMARY KEY,
+    BranchingStyleName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE AspectRatio (
-    AspectRatioID INT PRIMARY KEY,
-    AspectRatioName VARCHAR(255)
+    AspectRatioID INT AUTO_INCREMENT PRIMARY KEY,
+    AspectRatioName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE GrowthVariability (
-    GrowthVariabilityID INT PRIMARY KEY,
-    GrowthVariabilityName VARCHAR(255)
+    GrowthVariabilityID INT AUTO_INCREMENT PRIMARY KEY,
+    GrowthVariabilityName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE BranchingMode (
-    BranchingModeID INT PRIMARY KEY,
-    BranchingModeName VARCHAR(255)
+    BranchingModeID INT AUTO_INCREMENT PRIMARY KEY,
+    BranchingModeName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE BranchingAngle (
-    BranchingAngleID INT PRIMARY KEY,
-    BranchingAngleName VARCHAR(255)
+    BranchingAngleID INT AUTO_INCREMENT PRIMARY KEY,
+    BranchingAngleName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE MacroStructureTypes (
-    MacroStructureTypesID INT PRIMARY KEY,
-    MacroStructureName VARCHAR(255),
-    FormDescription TEXT
+    MacroStructureTypesID INT AUTO_INCREMENT PRIMARY KEY,
+    MacroStructureName VARCHAR(255) NOT NULL,
+    FormDescription TEXT,
+    SortOrder INT
 );
 
