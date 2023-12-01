@@ -98,8 +98,8 @@ CREATE TABLE PlanView (
 );
 
 CREATE TABLE Linkage (
-    LinkageID INT PRIMARY KEY,
-    LinkageName VARCHAR(255)
+    LinkageID INT AUTO_INCREMENT PRIMARY KEY,
+    LinkageName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Initiation (
