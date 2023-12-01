@@ -14,7 +14,7 @@ CREATE TABLE MacroStructurePhotos (
     InReport BOOLEAN,
     OutcropPhoto BOOLEAN,
     Photomicrograph BOOLEAN,
-    OtherImage BOO LEAN,
+    OtherImage BOOLEAN,
     CLImage BOOLEAN,
     OtherDocument BOOLEAN,
     ReferenceLink VARCHAR(255) NOT NULL,
