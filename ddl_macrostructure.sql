@@ -3,13 +3,13 @@ USE microbialites;
 
 CREATE TABLE MacroStructure (
     MacrostructureID INT PRIMARY KEY,
-    WayptID INT,
+    WayptID INT NOT NULL,
     FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID)
 );
 
 CREATE TABLE MacroStructurePhotos (
     MacroStructureID INT,
-    PhotoID INT,
+    PhotoID INT NOT NULL,
     WaypointID INT,
     InReport BOOLEAN,
     OutcropPhoto BOOLEAN,

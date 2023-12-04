@@ -3,9 +3,9 @@ USE microbialites;
 
 CREATE TABLE ThinStructures (
     ThinStructureID INT PRIMARY KEY,
-    WaypointID INT,
-    MacroStructureID INT,
-    MesoStructureID INT,
+    WaypointID INT NOT NULL,
+    MacroStructureID INT NOT NULL,
+    MesoStructureID INT NOT NULL,
     FOREIGN KEY (WaypointID) REFERENCES Waypoints(WaypointID),
     FOREIGN KEY (MacroStructureID) REFERENCES MacroStructures(MacroStructureID),
     FOREIGN KEY (MesoStructureID) REFERENCES MesoStructures(MesoStructureID)
