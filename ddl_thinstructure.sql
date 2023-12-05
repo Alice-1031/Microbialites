@@ -2,7 +2,7 @@
 USE microbialites;
 
 CREATE TABLE ThinStructures (
-    ThinStructureID INT PRIMARY KEY,
+    ThinStructureID INT PRIMARY KEY AUTO_INCREMENT,
     WaypointID INT NOT NULL,
     MacroStructureID INT NOT NULL,
     MesoStructureID INT NOT NULL,
