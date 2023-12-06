@@ -6,7 +6,7 @@ CREATE TABLE ThinStructures (
     WaypointID INT NOT NULL,
     MacroStructureID INT NOT NULL,
     MesoStructureID INT NOT NULL,
-    FOREIGN KEY (WaypointID) REFERENCES Waypoints(WaypointID),
+    FOREIGN KEY (WaypointID) REFERENCES Waypoint(WaypointID),
     FOREIGN KEY (MacroStructureID) REFERENCES MacroStructures(MacroStructureID),
     FOREIGN KEY (MesoStructureID) REFERENCES MesoStructures(MesoStructureID)
 );

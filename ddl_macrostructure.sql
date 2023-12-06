@@ -10,7 +10,7 @@ CREATE TABLE MacroStructure (
 CREATE TABLE MacroStructurePhotos (
     MacroStructureID INT,
     PhotoID INT NOT NULL,
-    WaypointID INT,
+    WayptID INT,
     InReport BOOLEAN,
     OutcropPhoto BOOLEAN,
     Photomicrograph BOOLEAN,
@@ -20,7 +20,7 @@ CREATE TABLE MacroStructurePhotos (
     ReferenceLink VARCHAR(255) NOT NULL,
     PRIMARY KEY (MacroStructureID, PhotoID),
     FOREIGN KEY (MacroStructureID) REFERENCES MacroStructure(MacrostructureID),
-    FOREIGN KEY (WaypointID) REFERENCES Waypoint(WayptID)
+    FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID)
 );
 
 CREATE TABLE MacroStructureProperties (
