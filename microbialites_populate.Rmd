@@ -1,0 +1,359 @@
+---
+title: "microbialites_data"
+output: html_document
+date: "2023-12-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(DBI)
+library(RMySQL)
+```
+
+## Insert Waypoint_ddl data
+
+```{r cars}
+waypoint <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblWaypointData.txt")
+
+```
+
+```{r}
+names(waypoint)[2] = "WayptName"
+names(waypoint)[1] = "OldWayptID"
+waypoint$NewWayptID <- seq_along(waypoint$WayptName)
+waypoint$WaypointSrc = NULL
+
+
+Waypoint <- waypoint[, !names(waypoint) %in% c("Northing", "Easting")]
+Coordinates <- waypoint[,c("OldWayptID","Latitude","Longitude","Northing", "Easting")]
+```
+##wypt data mapping
+```{r}
+waypoint_mapping <- Waypoint[, c("OldWayptID", "NewWayptID")]
+```
+
+```{r}
+Waypoint <- merge(Waypoint, waypoint_mapping, by.x = "OldWayptID",by.y ="OldWayptID" )
+Coordinates <- merge(Coordinates, waypoint_mapping, by.x = "OldWayptID",by.y ="OldWayptID" )
+```
+
+```{r}
+Waypoint$OldWayptID = NULL
+Waypoint$NewWayptID.y = NULL
+```
+
+```{r}
+names(Waypoint)[18] = "WayptID"
+```
+
+```{r}
+Coordinates$OldWayptID = NULL
+```
+
+```{r}
+names(Coordinates)[5] = "WayptID"
+```
+
+
+```{r}
+# MySQL connection parameters
+dbname <- "microbialites"  
+host <- "localhost"  
+user <- "root" 
+password <- "12344321"  
+
+# Connect to MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+# Delete existing rows in the Waypoint table without dropping the table
+dbExecute(con, "DELETE FROM Waypoint")
+dbExecute(con,"DELETE FROM Coordinates")
+# Write the dataframe to MySQL without dropping/recreating the table
+dbWriteTable(con, "Waypoint", Waypoint, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Coordinates", Coordinates, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con)
+
+```
+##Insert macroStructure_ddl data
+
+```{r cars}
+ #AspectRatio <- 
+ meso <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblAllMesostructures.txt")
+ macro <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMacrostructureData.txt")
+ 
+```
+#MacroStructure
+```{r}
+names(macro)[1] = "OldMacroStructureID"
+names(macro)[4] = "OldWayptID"
+macro$NewMacroStructureID <- seq_along(macro$OldMacroStructureID)
+MacroStructure <- macro[,c("NewMacroStructureID","OldMacroStructureID","OldWayptID")]
+```
+#Macro Data mapping
+```{r}
+macroStructure_mapping <-macro[,c("NewMacroStructureID","OldMacroStructureID")]
+
+```
+
+```{r}
+MacroStructure <- merge(MacroStructure, waypoint_mapping, by.x = "OldWayptID",by.y ="OldWayptID" )
+MacroStructure <- MacroStructure[,c("NewWayptID","OldMacroStructureID","NewMacroStructureID")]
+MacroStructure <- merge(MacroStructure,macroStructure_mapping,by.x = "OldMacroStructureID",by.y= "OldMacroStructureID")
+MacroStructure <- MacroStructure[,2:3]
+names(MacroStructure)[2] = "MacroStructureID"
+names(MacroStructure)[1] = "WayptID"
+```
+#MacroStructurePhotos
+```{r}
+PhotoLinks <-  read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblPhotoLinksData.txt")
+# Filter out rows where MacrostructureID or WayptIDKey is NA or less than 2
+df_photo <- PhotoLinks[!is.na(PhotoLinks$MacrostructureID) & PhotoLinks$MacrostructureID >= 2, ]
+df_photo <- df_photo[!is.na(df_photo$WayptIDKey) & df_photo$WayptIDKey >= 2, ]
+
+```
+
+```{r}
+df_photo$NewPhotoID <- seq_along(df_photo$keyPhotoID)
+photoID_mapping <- df_photo[,c("keyPhotoID","NewPhotoID")]
+```
+
+```{r}
+names(df_photo)[3] = "OldMacroStructureID"
+df_photo <- merge(df_photo, macroStructure_mapping, by.x ="OldMacroStructureID",by.y ="OldMacroStructureID" )
+```
+
+```{r}
+df_photo <- merge(df_photo, waypoint_mapping, by.x = "WayptIDKey", by.y = "OldWayptID")
+```
+
+```{r}
+df_photo <- merge(df_photo,photoID_mapping,by.x="keyPhotoID",by.y="keyPhotoID")
+```
+
+```{r}
+MacroStructurePhotos <- df_photo[,c("NewMacroStructureID","NewPhotoID.y","NewWayptID","InReport","OutcropPhoto","Photomicrograph","OtherImage","CLImage","OtherDocument","PhotoLinkRelative2")]
+```
+
+```{r}
+names(MacroStructurePhotos)[1] = "MacroStructureID"
+names(MacroStructurePhotos)[2] = "PhotoID"
+names(MacroStructurePhotos)[3] = "WayptID"
+names(MacroStructurePhotos)[10] = "ReferenceLink"
+```
+
+
+
+```{r}
+
+# MySQL connection parameters
+dbname <- "microbialites"  # The name of your database
+host <- "localhost"  # Since the user 'root' has access from 'localhost'
+user <- "root"  # The username indicated in MySQL Workbench
+password <- "12344321"  # The password you have for the 'root' user
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+
+# Write the dataframe to MySQL without dropping/recreating the table
+dbWriteTable(con, "MacroStructure", MacroStructure, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MacroStructurePhotos", MacroStructurePhotos, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con) 
+
+```
+
+# MacroStructureProperties
+```{r}
+MegaStructureType <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMegastructureTypes.txt") 
+MegaStructureShape <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMegastructureTypes.txt") 
+MegaStructureSize <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMegastructureTypes.txt") 
+Substrate <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpSubstrate.txt") 
+PlainView <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpPlanView.txt")
+Linkage <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpLinkage.txt")
+Initiation <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpInitiation.txt")
+Spacing <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpSpacing.txt")
+Shape <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpShape.txt")
+ShapeLayering <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpLayerShape.txt")
+ColumnShape <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpColumnShape.txt")
+ShapeDome <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpShape.txt")
+ConicalShape <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpConicalShapes.txt")
+Attitude <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpAttitude.txt")
+BranchingStyle <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpBranchingStyle.txt")
+AspectRatio <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpAspectRatio.txt")
+GrowthVariability <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpGrowthVariability.txt")
+BranchingMode <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpBranchingMode.txt")
+BranchingAngle <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpDivergenceAngle.txt")
+MacroStructureTypes <-   read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMacrostructureTypes.txt")
+```
+
+```{r}
+names(MegaStructureType)[1] =  "TypeID"
+names(MegaStructureShape)[1] = "ShapeID"
+names(MegaStructureSize)[1] =  "SizeID"
+names(Substrate)[1] =          "SubstrateID"
+names(Substrate)[2] =          "SubstrateName"
+names(PlainView)[1] =          "PlanViewID"
+names(PlainView)[2] =          "PlanViewName"
+names(Linkage)[1]   =  "LinkageID"
+names(Linkage)[2]   =  "LinkageName"
+names(Initiation)[1] = "InitiationID"
+names(Initiation)[2] = "InitiationName"
+names(Spacing)[1] = "SpacingID"
+names(Spacing)[2] = "SpacingName"
+names(Shape)[1] = "ShapeID"
+names(Shape)[2] = "ShapeName"
+names(ShapeLayering)[1] = "ShapeLayeringID"
+names(ShapeLayering)[2] = "ShapeLayeringName"
+names(ColumnShape)[1] = "ColumnShapeID"
+names(ColumnShape)[2] = "ColumnShapeName"
+names(ShapeDome)[1] = "ShapeDomeID"
+names(ShapeDome)[2] = "ShapeDomeName"
+names(ConicalShape)[1] = "ConicalShapeID"
+names(ConicalShape)[2] = "ConicalShapeName"
+names(Attitude)[1] = "AttitudeID"
+names(Attitude)[2] = "AttitudeName"
+names(BranchingStyle)[1] = "BranchingStyleID"
+names(BranchingStyle)[2] = "BranchingStyleName"
+names(AspectRatio)[1] = "AspectRatioID"
+names(AspectRatio)[2] = "AspectRatioName"
+names(GrowthVariability)[1] = "GrowthVariabilityID"
+names(GrowthVariability)[2] = "GrowthVariabilityName"
+names(BranchingMode)[1] = "BranchingModeID"
+names(BranchingMode)[2] = "BranchingModeName"
+names(BranchingAngle)[1] = "BranchingAngleID"
+names(BranchingAngle)[2] = "BranchingAngleName"
+
+```
+
+```{r}
+MacroStructureTypes <- MacroStructureTypes[1:3]
+MacroStructureTypes$MacroStructureTypesID <- seq_along(MacroStructureTypes$ID)
+```
+
+
+```{r}
+macroType_mapping <- MacroStructureTypes[,c("ID","MacroStructureTypesID")]
+```
+
+```{r}
+MacroStructureTypes <- MacroStructureTypes[2:4]
+```
+
+
+
+```{r}
+# MySQL connection parameters
+dbname <- "microbialites"  # The name of your database
+host <- "localhost"  # Since the user 'root' has access from 'localhost'
+user <- "root"  # The username indicated in MySQL Workbench
+password <- "12344321"  # The password you have for the 'root' user
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+
+# Write the dataframe to MySQL without dropping/recreating the table
+#dbWriteTable(con, "MegaStructureType", MegaStructureType, append = TRUE, row.names = FALSE)
+#dbWriteTable(con, "MegaStructureShape", MegaStructureShape, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MegaStructureSize", MegaStructureSize, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Substrate", Substrate, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "PlainView", PlainView, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Linkage", Linkage, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Initiation",Initiation, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Spacing",Spacing, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Shape",Shape, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "ShapeLayering",ShapeLayering, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "ColumnShape",ColumnShape, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "ShapeDome",ShapeDome, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "ConicalShape",ConicalShape, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Attitude",Attitude, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "BranchingStyle",BranchingStyle, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "AspectRatio",AspectRatio, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "GrowthVariability",GrowthVariability, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "BranchingMode",BranchingMode, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "BranchingAngle",BranchingAngle, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "ColumnShape",ColumnShape, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MacroStructureTypes",MacroStructureTypes, append = TRUE, row.names = FALSE)
+# Close the connection
+dbDisconnect(con) 
+```
+```{r}
+MacroStructureProperties <- macro
+```
+
+```{r}
+names(MacroStructureProperties)[2] = "OldMacrostructureTypeID"
+```
+
+
+```{r}
+names(MacroStructureProperties)[6] = "MegaStructureTypeID"
+names(MacroStructureProperties)[7] = "MegastructureShapeID"
+names(MacroStructureProperties)[8] = "MegaStructureSizeID"
+names(MacroStructureProperties)[9] = "SubstrateID"
+names(MacroStructureProperties)[10] = "InitiationID"
+names(MacroStructureProperties)[11] = "PlanViewID"
+names(MacroStructureProperties)[12] = "LinkageID"
+names(MacroStructureProperties)[13] = "SpacingID"
+names(MacroStructureProperties)[14] = "ShapeID"
+names(MacroStructureProperties)[15] = "ShapeLayeringID"
+names(MacroStructureProperties)[16] = "ShapeDomeID"
+names(MacroStructureProperties)[17] = "ConicalShapeID"
+names(MacroStructureProperties)[18] = "AspectRatioID"
+names(MacroStructureProperties)[19] = "GrowthVariabilityID"
+names(MacroStructureProperties)[20] = "AttitudeID"
+names(MacroStructureProperties)[21] = "BranchingStyleID"
+names(MacroStructureProperties)[22] = "BranchingModeID"
+names(MacroStructureProperties)[23] = "BranchingAngleID"
+names(MacroStructureProperties)[24] = "ColumnShapeID"
+```
+
+```{r}
+MacroStructureProperties <- merge(MacroStructureProperties,macroType_mapping , by.x ="OldMacrostructureTypeID",by.y ="ID" )
+```
+
+```{r}
+MacroStructureProperties <- merge(MacroStructureProperties,waypoint_mapping , by.x ="OldWayptID",by.y ="OldWayptID" )
+```
+
+```{r}
+MacroStructureProperties$OldWayptID = NULL
+MacroStructureProperties$OldMacroStructureID = NULL
+MacroStructureProperties$OldMacrostructureTypeID = NULL
+```
+
+```{r}
+names(MacroStructureProperties)[22] = "MacrostructureID"
+MacroStructureProperties$NewWayptID = NULL #accidentally merged it  
+```
+
+```{r}
+# MySQL connection parameters
+dbname <- "microbialites"  # The name of your database
+host <- "localhost"  # Since the user 'root' has access from 'localhost'
+user <- "root"  # The username indicated in MySQL Workbench
+password <- "12344321"  # The password you have for the 'root' user
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+
+# Write the dataframe to MySQL without dropping/recreating the table
+dbWriteTable(con, "MacroStructureProperties",MacroStructureProperties, append = TRUE, row.names = FALSE)
+# Close the connection
+dbDisconnect(con) 
+```
+##Insert MesoStructure data
+
+```{r}
+meso <- read.csv("")
+```
+
