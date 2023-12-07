@@ -1,9 +1,10 @@
+CREATE DATABASE IF NOT EXISTS microbialites;
 USE microbialites;
 
 -- Creating the Waypoint table
 CREATE TABLE Waypoint (
-    WayptID INT PRIMARY KEY AUTO_INCREMENT,
-    WaypointName VARCHAR(50), -- allow users to have their own naming convention
+    WayptID INT PRIMARY KEY AUTO_INCREMENT,-- New auto-incremented ID
+    WayptName VARCHAR(50), -- Original WayptName from the old database
     Latitude DECIMAL(10, 2) ,
     Longitude DECIMAL(10, 2),
     UTMZone1 INT,
@@ -26,11 +27,12 @@ CREATE TABLE Waypoint (
 CREATE TABLE Coordinates (
     CoordinateID INT PRIMARY KEY AUTO_INCREMENT,
     WayptID INT,
-    Latitude DECIMAL(10, 2),
+    Latitude DECIMAL(10, 2) ,
     Longitude DECIMAL(10, 2),
     Northing DECIMAL(10, 2),
     Easting DECIMAL(10, 2),
     FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID)
+    ON DELETE CASCADE
 );
 
 
