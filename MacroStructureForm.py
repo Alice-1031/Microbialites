@@ -1,5 +1,53 @@
 import sqlite3
 
+#MACROSTRUCTURE
+
+#opens connection and creates cursor
+conn = sqlite3.connect('filler.db')
+cursor = conn.cursor()
+
+# MacrostructureID Input
+while True:
+    try:
+        MacrostructureID = input("Enter Macrostructure ID (Must Be An Integer): ")
+        MacrostructureID = int(MacrostructureID)
+        break
+    except ValueError:
+        print("Value Must Be An Integer!")
+MacrostructureID = str(MacrostructureID)
+print('Macrostructure ID is:', MacrostructureID)
+
+# WayptID Input
+while True:
+    try:
+        WayptID = input("Enter Waypoint ID (Must Be An Integer): ")
+        WayptID = int(WayptID)
+        break
+    except ValueError:
+        print("Value Must Be An Integer!")
+WayptID = str(WayptID)
+print('Waypoint ID is:', WayptID)
+
+# Query String for execute
+addMacrostructureQuery = '''
+    INSERT INTO MacroStructure (
+        MacrostructureID, WayptID
+    ) VALUES (?, ?)
+'''
+
+# executes the cursor that is set up
+cursor.execute(addMacrostructureQuery, (
+    MacrostructureID, WayptID
+))
+
+# commit and close connection
+conn.commit()
+conn.close()
+
+print(addMacroStructureQuery)
+
+#PROPERTIES
+
 #opens connection and creates cursor
 conn = sqlite3.connect('filler.db')
 cursor = conn.cursor()
@@ -251,7 +299,7 @@ macrostructureTypesID = str(MacrostructureTypesID)
 print('MacrostructureTypes ID is: ' + macrostructureTypesID)
 
 # Query String for execute
-addMacroStructureQuery = '''
+addMacroStructurePropertiesQuery = '''
     INSERT INTO MacroStructureProperties (
         MegaStructureTypeID, SectionHeight, Comments,
         MegastructureShapeID, MegaStructureSizeID, SubstrateID, InitiationID,
@@ -263,7 +311,7 @@ addMacroStructureQuery = '''
 '''
 
 # executes the cursor that is set up
-cursor.execute(addMacroStructureQuery, (
+cursor.execute(addMacroStructurePropertiesQuery, (
     MegaStructureTypeID, SectionHeight, Comments,
     MegastructureShapeID, MegaStructureSizeID, SubstrateID, InitiationID,
     PlanViewID, LinkageID, SpacingID, ShapeID, ShapeLayeringID, ShapeDomeID,
@@ -276,8 +324,9 @@ cursor.execute(addMacroStructureQuery, (
 conn.commit()
 conn.close()
 
-print(addMacroStructureQuery)
+print(addMacroStructurePropertiesQuery)
 
+#PHOTOS
 
 conn = sqlite3.connect('filler.db')
 cursor = conn.cursor()
