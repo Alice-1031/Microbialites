@@ -1,8 +1,6 @@
 import sqlite3
 
-#opens connection and creates cursor
-conn = sqlite3.connect('filler.db')
-cursor = conn.cursor()
+
 
 while True:
     try:
