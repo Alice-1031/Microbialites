@@ -90,7 +90,7 @@ CREATE TABLE ThinTextureTypes (
 
 -- ClasticGrains Table
 CREATE TABLE ClasticGrains (
-    ClasticGriansID INT PRIMARY KEY,
+    ClasticGrainsID INT PRIMARY KEY,
     ClasticGrainType VARCHAR(255),
     Sort INT
 );
