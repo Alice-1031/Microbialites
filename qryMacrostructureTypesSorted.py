@@ -21,7 +21,7 @@ SELECT
     MacroStructureName,
     FormDescription
 FROM
-    MacroStructure
+    MacroStructureTypes
 ORDER BY
     MacroStructureTypesID;
 '''
