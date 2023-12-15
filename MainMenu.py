@@ -16,6 +16,7 @@ from qryPhotosBySampleID import *
 from qryPhotosBySampleIDWThinSections import *
 from qryPriorityListForAnalysis import *
 from qryThinSectionPhotosSorted import *
+from qryWaypointDataSorted import *
 
 # The main menu our users will use to interact with the Database
 def main_menu():
@@ -39,7 +40,7 @@ def main_menu():
                     + "will troubleshoot with you and create a ticket on your behalf")
         elif choice == '4':
             print("Exiting program.")
-            break
+            exit()
         else:
             print("Invalid choice. Please enter 1-4.")
 
