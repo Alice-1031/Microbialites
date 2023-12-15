@@ -3,7 +3,6 @@ from mysql.connector import Error
 from qryClasticGrainTypesSorted import *
 from qryImagereport import *
 from qryMacrostructureDataSorted import *
-from qryMacrostructurePhotoReport import *
 from qryMacrostructurePhotosSorted import *
 from qryMacrostructureTypesSorted import *
 from qryMakeAMesostructureReport import *
