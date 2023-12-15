@@ -17,6 +17,15 @@ from qryPriorityListForAnalysis import *
 from qryThinSectionPhotosSorted import *
 from qryWaypointDataSorted import *
 
+db_config = {
+        'user': 'izgrmlgwk70csp9l',  # Your JawsDB username
+        'password': 'qpmikh9t3n3a2ekg',  # Your JawsDB password
+        'host': 'nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',  # Your JawsDB host
+        'database': 'h762lahe056bge13',  # Your JawsDB database name
+        'port': 3306
+}
+
+
 # The main menu our users will use to interact with the Database
 def main_menu():
     while True:
@@ -24,7 +33,8 @@ def main_menu():
         print("1. Add/Insert data")
         print("2. Run a Query")
         print("3. Customer Support")
-        print("4. Exit")
+        print("4. Drop Table")
+        print("5. Exit")
         choice = input("Enter choice: ")
 
         if choice == '1':
@@ -38,6 +48,17 @@ def main_menu():
             print("Please visit TDx and create a ticket or give us a call and we \n"
                     + "will troubleshoot with you and create a ticket on your behalf")
         elif choice == '4':
+            try:
+                dropTarget = input("Enter name of table to delete entirely (Case sensitive): ")
+                dropTableQuery = '''
+                DROP TABLE IF EXISTS %s
+                '''
+            except mysql.connector.Error as e:
+                if e.errno == 1146:
+                    print("Table doesn't exist")
+                else:
+                    print(f"Database error occurred: {e}")
+        elif choice == '5':
             print("Exiting program.")
             exit()
         else:
