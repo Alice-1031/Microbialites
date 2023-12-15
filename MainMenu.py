@@ -1,21 +1,21 @@
 import mysql.connector
 from mysql.connector import Error
-from qryClasticGrainTypesSorted import *
-from qryImagereport import *
-from qryMacrostructureDataSorted import *
-from qryMacrostructurePhotosSorted import *
-from qryMacrostructureTypesSorted import *
-from qryMakeAMesostructureReport import *
-from qryMesostructureDataSorted import *
-from qryMesostructurePhotosWThinSections import *
-from qryMesostructureTexturesSorted import *
-from qryMesostructureTypesSorted import *
-from qryPhotoLinksDataSorted import *
-from qryPhotosBySampleID import *
-from qryPhotosBySampleIDWThinSections import *
-from qryPriorityListForAnalysis import *
-from qryThinSectionPhotosSorted import *
-from qryWaypointDataSorted import *
+from queries.qryClasticGrainTypesSorted import *
+from queries.qryImagereport import *
+from queries.qryMacrostructureDataSorted import *
+from queries.qryMacrostructurePhotosSorted import *
+from queries.qryMacrostructureTypesSorted import *
+from queries.qryMakeAMesostructureReport import *
+from queries.qryMesostructureDataSorted import *
+from queries.qryMesostructurePhotosWThinSections import *
+from queries.qryMesostructureTexturesSorted import *
+from queries.qryMesostructureTypesSorted import *
+from queries.qryPhotoLinksDataSorted import *
+from queries.qryPhotosBySampleID import *
+from queries.qryPhotosBySampleIDWThinSections import *
+from queries.qryPriorityListForAnalysis import *
+from queries.qryThinSectionPhotosSorted import *
+from queries.qryWaypointDataSorted import *
 
 db_config = {
         'user': 'izgrmlgwk70csp9l',  # Your JawsDB username
@@ -91,14 +91,14 @@ def add_menu():
         choice = input("Enter choice: ")
 
         if choice == '1':
-            from WaypointForm import insertWaypoint_method
+            from forms.WaypointForm import insertWaypoint_method
             insertWaypoint_method()
             main_menu()
         elif choice == '2':
             insertMeso_method()
             main_menu()
         elif choice == '3':
-            from MacroStructureForm import insertMacro_method
+            from forms.MacroStructureForm import insertMacro_method
             insertMacro_method()
             main_menu()
         elif choice == '4':
