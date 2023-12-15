@@ -4,8 +4,7 @@ USE microbialites;
 CREATE TABLE MacroStructure (
     MacrostructureID INT PRIMARY KEY AUTO_INCREMENT,
     WayptID INT NOT NULL,
-    FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID) ON DELETE CASCADE 
-    
+    FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID) ON DELETE CASCADE   
 );
 
 CREATE TABLE MacroStructurePhotos (
