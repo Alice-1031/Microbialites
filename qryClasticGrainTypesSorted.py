@@ -1,4 +1,3 @@
-import sqlite3
 import mysql.connector
 
 # JawsDB MySQL connection details
@@ -17,12 +16,11 @@ cursor = conn.cursor()
 qry = '''
 SELECT
     ClasticGrainsID,
-    ClasticGrainType,
-    Sort
+    ClasticGrainType
 FROM
     ClasticGrains
 ORDER BY
-    Sort;
+    ClasticGrainsID;
 '''
 
 cursor.execute(qry)
