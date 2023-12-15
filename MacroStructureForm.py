@@ -34,11 +34,12 @@ try:
         WayptID
     ) VALUES (%s)
     '''
+
     cursor.execute(macroStructureQuery, (WayptID,))
     connection.commit()
 
     selectMacroStructureIDQuery = '''
-    SELECT MAX(MacroStructureID) FROM macrostructure
+    SELECT MAX(MacroStructureID) FROM MacroStructure
     '''
 
     cursor.execute(selectMacroStructureIDQuery)
@@ -115,7 +116,7 @@ try:
             break
         except ValueError:
             print("Value Must Be An Integer!")
-    InitiationID  = str(InitiationID )
+    InitiationID = str(InitiationID )
     print('InitiationID  Is: ' + InitiationID)
 
 
@@ -152,7 +153,7 @@ try:
         except ValueError:
             print("Value Must Be An Integer!")
     SpacingID = str(SpacingID)
-    print('PlanViewID  Is: ' + SpacingID)
+    print('Spacing  Is: ' + SpacingID)
 
 
     #ShapeID
@@ -272,7 +273,7 @@ try:
     #ColumnShapeID
     while True:
         try:
-            ColumnShapeID  = input("Enter PlanView ID(Must Be An Integer): ")
+            ColumnShapeID  = input("Enter ColumnShapeID (Must Be An Integer): ")
             ColumnShapeID  = int(ColumnShapeID)
             break
         except ValueError:
@@ -307,12 +308,25 @@ try:
         BranchingStyleID, BranchingModeID, BranchingAngleID, ColumnShapeID, MacrostructureTypesID))
 
     # Committing the transaction
-
+    connection.commit()
     print("Data inserted successfully")
 
 except mysql.connector.Error as e:
     if e.errno == 1452:
         print("Foreign Key Constraint Error: The referenced key does not exist.")
+        # Extract constraint name and referenced table name from the error message
+        error_message = str(e)
+        constraint_name_start = error_message.find('FOREIGN KEY (`') + len('FOREIGN KEY (`')
+        constraint_name_end = error_message.find('`) REFERENCES')
+        constraint_name = error_message[constraint_name_start:constraint_name_end]
+
+        referenced_table_start = error_message.find('REFERENCES `' + db_config['database'] + '`.`') + len('REFERENCES `' + db_config['database'] + '`.`')
+        referenced_table_end = error_message.find('` (`')
+        referenced_table_name = error_message[referenced_table_start:referenced_table_end]
+
+        print(f"Foreign Key Constraint Error: The referenced key in table '{referenced_table_name}' does not exist for constraint '{constraint_name}'.")
+        print(f"WayptID: {WayptID}")
+        print(f"MacrostructureID: {MacrostructureID}")
     else:
         print(f"Database error occurred: {e}")
 
