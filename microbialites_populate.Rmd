@@ -353,7 +353,804 @@ dbDisconnect(con)
 ```
 ##Insert MesoStructure data
 
+##Insert MesoStructure data
+
 ```{r}
-meso <- read.csv("")
+meso <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblAllMesostructures.txt")
 ```
+
+```{r}
+meso_data <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMesostructureData.txt")
+```
+
+
+```{r}
+meso_data <- meso_data[-243,] #removed the only duplicate SampleID "17-WB-1b" there were conflicting records
+```
+
+
+```{r}
+meso_data$SampleIDKey = NULL
+meso_data$WayptName = NULL
+```
+
+
+```{r}
+names(meso_data)[10] = "OldMacroStructureID"
+
+```
+
+```{r}
+meso_data <- merge(meso_data,macroStructure_mapping,by = "OldMacroStructureID",all.x = TRUE)
+```
+
+```{r}
+names(meso_data)[49] = "MacroStructureID"
+meso_data$OldMacroStructureID = NULL
+```
+
+```{r}
+meso_data <- merge(meso_data,MacroStructure,by = "MacroStructureID",all.x = TRUE)
+```
+
+
+```{r}
+meso_data$MesoStructureID <- seq_along(meso_data$SampleID)
+```
+
+```{r}
+MesoStructure <- meso_data[,c("MesoStructureID","MacroStructureID","WayptID","SampleID")]
+names(MesoStructure)[4] = "MesoStructureName"
+```
+
+```{r}
+MesoStructure$MesoStructureName = NULL
+```
+
+
+```{r}
+df_photo_meso <- PhotoLinks[!(is.na(PhotoLinks$SampleID) | PhotoLinks$SampleID == 0), ]
+df_photo_meso <- df_photo[!(is.na(df_photo$SampleIDKey) | df_photo$SampleIDKey == 0), ]
+```
+
+```{r}
+names(df_photo_meso)[4] = "MesoStructureName"
+```
+
+```{r}
+mesoName_to_ID <- MesoStructure[,c("MesoStructureName","MesoStructureID")]
+```
+
+```{r}
+MesoStructureSampleName <- mesoName_to_ID
+```
+
+```{r}
+df_photo_meso <- merge(df_photo_meso, mesoName_to_ID, by = "MesoStructureName", all.x = TRUE )
+```
+
+
+```{r}
+df_photo_meso$PhotoID = NULL
+df_photo_meso$PhotoID <- seq_along(df_photo_meso$keyPhotoID)
+```
+
+```{r}
+MesoStructurePhotos <- df_photo_meso[,c("MesoStructureID","PhotoID","NewWayptID","NewMacroStructureID","PhotoLinkRelative2","InReport","OutcropPhoto","Photomicrograph","OtherImage","CLImage","OtherDocument")]
+```
+
+```{r}
+names(MesoStructurePhotos)[3] = "WayptID" 
+names(MesoStructurePhotos)[4] = "MacroStructureID" 
+names(MesoStructurePhotos)[5] = "RefrenceLink"
+```
+
+```{r}
+InternationalSampleNumber <- meso_data[,c("MesoStructureID","IGSNIntlGeoSampleNumber")]
+```
+
+```{r}
+InternationalSampleNumber <- InternationalSampleNumber[!(InternationalSampleNumber$IGSNIntlGeoSampleNumber == ""),]
+```
+
+```{r}
+TextureType <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMesostructureTextureTypes.txt")
+TextureType$SortOrder = NULL
+names(TextureType)[1] = "TextureTypeID"
+names(TextureType)[2] = "MesoStructureTextureType"
+```
+
+```{r}
+names(MesoTextureTypes)
+```
+
+
+```{r}
+tblTextureTypes <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblTextureTypes.txt")
+```
+
+
+
+
+```{r}
+MesoTextureTypes$SortOrder = NULL
+```
+
+```{r}
+MesoStructureTextureTypes <- meso_data[,c("MesoStructureID","MesostructureTexture2","MesostructureTexture")]
+```
+
+```{r}
+MesoStructureTextureTypes <- MesoStructureTextureTypes[!(is.na(MesoStructureTextureTypes$MesostructureTexture2) | MesoStructureTextureTypes$MesostructureTexture2 > 13),]
+MesoStructureTextureTypes <- MesoStructureTextureTypes[!(is.na(MesoStructureTextureTypes$MesostructureTexture) | MesoStructureTextureTypes$MesostructureTexture > 13),]
+```
+
+```{r}
+temp1 <- MesoStructureTextureTypes[, c("MesoStructureID", "MesostructureTexture")]
+temp2 <- MesoStructureTextureTypes[, c("MesoStructureID", "MesostructureTexture2")]
+
+# Rename the texture columns in both data frames to have the same name
+names(temp1)[2] <- "TextureTypeID"
+names(temp2)[2] <- "TextureTypeID"
+
+# Combine the two data frames
+combined <- rbind(temp1, temp2)
+```
+
+```{r}
+MesoStructureTextureTypes <- combined
+```
+
+```{r}
+Architecture <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoArchitecture.txt")
+names(Architecture)[1] = "ArchitectureID"
+names(Architecture)[2] = "ArchitectureType"
+```
+
+```{r}
+MesoGrainType <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMesostructureGrainTypes.txt")
+names(MesoGrainType)[1] = "GrainTypeID"
+names(MesoGrainType)[2] = "GrainType"
+```
+
+```{r}
+MesoGrainType$SortOrder = NULL
+```
+
+```{r}
+ThinSectionPriority <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblThinSectionPriority.txt")
+MesoInheritance <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoInheritance.txt")
+MesoStructureType <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMesostructureTypes.txt")
+MesoStructureLaminaPattern <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoLaminarPattern.txt")
+MesoStackingOverlap <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoStackingOverlap.txt")
+MesoAlternation <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoAlternation.txt")
+MesoWaviness <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoWaviness.txt")
+MesoModalitySkewness <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoModalitySkewness.txt")
+MesoLaminaProfile <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoLamProfile.txt")
+MesoSynopticRelief <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoSynopticRelief.txt")
+MesoLaminaIneritance <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblLaminaInheritance.txt")
+MesoLateralContinuity <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoLatContinuity.txt")
+MesoWalls <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoWalls.txt")
+MesoMacroLaminae <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoMacrolaminae.txt")
+MesoLaminaShape <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblLaminaShapeTypes.txt")
+MesoClotType <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMesoClotTypes.txt")
+MesoClotShape <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tlkpMesoClotShape.txt")
+  
+```
+
+```{r}
+ThinSectionPriority$SortOrder = NULL
+names(ThinSectionPriority)[1] = "ThinSectionPriorityID"
+names(ThinSectionPriority)[2] = "PriorityType"
+```
+
+```{r}
+names(MesoInheritance)[1] = "MesoInheritanceID"
+names(MesoInheritance[2]) = "Inheritance"
+```
+
+```{r}
+MesoStructureType$SortOrder = NULL
+names(MesoStructureType)[1] = "MesoStructureTypeID"
+```
+
+```{r}
+names(MesoStructureLaminaPattern)[1] = "MesoStructureLaminaPatternID"
+```
+
+```{r}
+names(MesoStackingOverlap)[1] = "MesoStackingOverlapID"
+```
+
+```{r}
+names(MesoAlternation)[1] = "MesoAlterationID"
+```
+
+```{r}
+names(MesoWaviness)[1] = "MesoWavinessID"
+```
+
+```{r}
+names(MesoModalitySkewness)[1] = "MesoModalityID"
+```
+
+```{r}
+names(MesoLaminaProfile)[1] = "MesoLaminaProfileID"
+```
+
+```{r}
+names(MesoSynopticRelief)[1] = "MesoSynopticReliefID"
+```
+
+```{r}
+MesoLaminaIneritance$Sort = NULL
+names(MesoLaminaIneritance)[1] = "MesoLaminaInheritanceID"
+names(MesoLaminaIneritance)[2] = "Inheritance"
+
+```
+
+```{r}
+names(MesoLateralContinuity)[1] = "MesoLateralContinuityID"
+names(MesoLateralContinuity)[2] = "LateralContinuity"
+```
+
+```{r}
+names(MesoWalls)[1] = "MesoWallsID"
+names(MesoWalls)[2] = "Walls"
+```
+
+```{r}
+names(MesoMacroLaminae)[1] = "MesoMacroLaminaeID"
+names(MesoMacroLaminae)[2] = "MacroLaminae"
+```
+
+```{r}
+names(MesoLaminaShape)[1] = "MesoLaminaShapeID"
+names(MesoLaminaShape)[2] = "LaminaShape"
+```
+
+```{r}
+MesoLaminaShape$Sort = NULL
+```
+
+```{r}
+names(MesoClotType)[1] = "MesoClotTypeID"
+names(MesoClotType)[2] = "ClotType"
+MesoClotType$Sort = NULL
+```
+
+```{r}
+names(MesoClotShape)[1] = "MesoClotShapeID"
+names(MesoClotShape)[2] = "ClotShape"
+```
+
+```{r}
+MesoStructureProperties <- meso_data[,c("MesoStructureID","MesostructureGrains","ThinSectionPriority","Inheritance","MesostructureType","LaminaePatterns","StackingOverlap","Alternation","Waviness","Modality","LaminaProfile","LaminaThickness","SynopticReliefNew","Lamina.Inheritance","LaterialContinuity","Wall","MacroLaminae","LaminaShape","MesostructureType","MesoCLotShape","MesoClotSize","InTheFRUInterval","AnalysisPriority","MacroStructureID","FieldDescription","Lithology","RockDescription","SampleSize","PeelAndSEMPriority","ThinSectionMade","C_N_Priority","Wavelength","AmplitudeOrHeight","MicrobialiteType","BriefNotes")]
+```
+
+```{r}
+MesoStructureProperties$MesoClotTypeID <- NA
+```
+
+```{r}
+names(MesoStructureProperties)[2] = "GrainTypeID"
+names(MesoStructureProperties)[3] = "ThinSectionPriorityID"
+names(MesoStructureProperties)[4] = "MesoInhertianceID"
+names(MesoStructureProperties)[5] = "MesoStructureTypeID"
+names(MesoStructureProperties)[6] = "MesoStructureLaminaPatternID"
+names(MesoStructureProperties)[7] = "MesoStackingOverlapID"
+names(MesoStructureProperties)[8] = "MesoAlterationID"
+names(MesoStructureProperties)[9] = "MesoWavinessID"
+names(MesoStructureProperties)[10] = "MesoModailityID"
+names(MesoStructureProperties)[11] = "MesoLaminaProfileID"
+names(MesoStructureProperties)[13] = "MesoSynopticReliefID"
+names(MesoStructureProperties)[14] = "MesoLaminaInhertianceID"
+names(MesoStructureProperties)[15] = "MesoLateralContinuityID"
+names(MesoStructureProperties)[16] = "MesoWallsID"
+names(MesoStructureProperties)[17] = "MesoMacroLaminaeID"
+names(MesoStructureProperties)[18] = "MesoLaminaShapeID"
+names(MesoStructureProperties)[19] = "MesoStructureTypeID"
+names(MesoStructureProperties)[20] = "MesoClotShapeID"
+names(MesoStructureProperties)[21] = "MesoClotSizeID"
+```
+
+```{r}
+MesoStructureProperties$MesoStructureTypeID.1 = NULL
+```
+
+```{r}
+# MySQL connection parameters
+dbname <- "microbialites"  # The name of your database
+host <- "localhost"  # Since the user 'root' has access from 'localhost'
+user <- "root"  # The username indicated in MySQL Workbench
+password <- "12344321"  # The password you have for the 'root' user
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+
+# Write the dataframe to MySQL without dropping/recreating the table
+
+dbWriteTable(con, "MesoStructure",MesoStructure, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoStructure",MesoStructure, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoStructurePhotos",MesoStructurePhotos, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "InternationalSampleNumber",InternationalSampleNumber, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoStructureSampleName",MesoStructureSampleName, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "TextureType",TextureType, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoStructureTextureTypes",MesoStructureTextureTypes, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Architecture", Architecture, append = TRUE, row.names = FALSE)
+#dbWriteTable(con, "MesoStructureArchitecture",MesoStructureArchitecture, append = TRUE, row.names = FALSE) did not need to run as there is no data rn
+dbWriteTable(con, "MesoGrainType",MesoGrainType, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "ThinSectionPriority",ThinSectionPriority, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoInheritance",MesoInheritance, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoStructureType",MesoStructureType, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoStructureLaminaPattern",MesoStructureLaminaPattern, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoStackingOverlap",MesoStackingOverlap, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoAlternation",MesoAlternation, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoWaviness", MesoWaviness, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoModalitySkewness",MesoModalitySkewness, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoSynopticRelief",MesoSynopticRelief, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoLaminaInheritance",MesoLaminaInheritance, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoLateralContinuity",MesoLateralContinuity, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoWalls",MesoWalls, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoMacroLaminae",MesoMacroLaminae, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoLaminaShape",MesoLaminaShape, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoClotType",MesoClotType, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MesoClotShape",MesoClotShape, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "Priority",Priority, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con) 
+```
+
+```{r}
+MesoLaminaInheritance <- MesoLaminaIneritance
+```
+
+```{r}
+names(MesoLateralContinuity)[1] = "MesoLateralContinuityID"
+names(MesoLateralContinuity)[2] = "LateralContinuity"
+```
+
+```{r}
+names(MesoStructureProperties)[14] = "MesoLaminaInheritanceID"
+```
+
+```{r}
+names(MesoStructureProperties)[4] = "MesoInheritanceID"
+```
+
+```{r}
+names(MesoStructureProperties)[10] = "MesoModalityID"
+```
+
+```{r}
+names(MesoStructureProperties)[16] = "MesoWallsID"
+```
+
+```{r}
+names(MesoStructureProperties)[21] = "MesoClotSize"
+```
+
+
+```{r}
+Priority <- data.frame(c(1:3), c("Low","Medium","High"))
+names(Priority)[1] = "ID"
+names(Priority)[2] = "Priority"
+```
+
+```{r}
+
+MesoStructureProperties[,19] = NULL
+
+```
+
+
+```{r}
+# MySQL connection parameters
+dbname <- "microbialites"  # The name of your database
+host <- "localhost"  # Since the user 'root' has access from 'localhost'
+user <- "root"  # The username indicated in MySQL Workbench
+password <- "12344321"  # The password you have for the 'root' user
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+# Write the dataframe to MySQL without dropping/recreating the table
+
+
+dbWriteTable(con, "MesoStructureProperties",MesoStructureProperties, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con) 
+```
+
+```{r}
+unique_links <- unique(PhotoLinks$PhotoLinkRelative2)
+```
+
+```{r}
+photos <- data.frame(PhotoID = seq_along(unique_links), PhotoLinkName = unique_links)
+```
+
+```{r}
+photos <- photos[-c(1694),] #removed an entry emoty for photo link
+```
+
+
+```{r}
+macrostructurephotos <- MacroStructurePhotos
+
+```
+
+```{r}
+macrostructurephotos$PhotoID = NULL
+macrostructurephotos <- merge(macrostructurephotos, photos, by.x = "ReferenceLink",by.y = "PhotoLinkName", all.x = TRUE )
+```
+
+```{r}
+mesostructurephotos <- MesoStructurePhotos
+mesostructurephotos$PhotoID = NULL
+names(mesostructurephotos)[4] = "ReferenceLink"
+
+```
+
+
+```{r}
+mesostructurephotos <- merge(mesostructurephotos, photos, by.x = "ReferenceLink",by.y = "PhotoLinkName", all.x = TRUE )
+```
+
+
+```{r}
+# MySQL connection parameters
+dbname <- "h762lahe056bge13"  
+host <- "nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com"  
+user <- "izgrmlgwk70csp9l"  
+password <- "qpmikh9t3n3a2ekg" 
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+# Write the dataframe to MySQL without dropping/recreating the table
+dbExecute(con, "DELETE FROM mesostructurephotos")
+dbExecute(con,"DELETE FROM macrostructurephotos")
+
+dbWriteTable(con, "photos",photos, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "macrostructurephotos",macrostructurephotos, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "mesostructurephotos",mesostructurephotos, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con) 
+```
+
+```{r}
+# MySQL connection parameters
+dbname <- "h762lahe056bge13"  
+host <- "nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com"  
+user <- "izgrmlgwk70csp9l"  
+password <- "qpmikh9t3n3a2ekg" 
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+dbExecute(con, "DELETE FROM photos")
+dbWriteTable(con, "photos",photos, append = TRUE, row.names = FALSE)
+
+
+# Close the connection
+dbDisconnect(con) 
+```
+
+```{r}
+tblThinSectionDescriptionData <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblThinSectionDescriptionData.txt")
+```
+
+```{r}
+tblThinSectionDescriptionData  <- merge(tblThinSectionDescriptionData,mesoName_to_ID,by.x = "SampleID",by.y = "MesoStructureName" )
+
+```
+
+```{r}
+#missing_sampleIDs <- tblThinSectionDescriptionData[is.na(tblThinSectionDescriptionData$MesoStructureID),]
+```
+
+```{r}
+#missing_sampleIDs <- missing_sampleIDs$SampleID
+```
+
+
+
+```{r}
+meso_to_macro <- meso_data[,c("MesoStructureID","MacroStructureID")]
+```
+
+```{r}
+tblThinSectionDescriptionData  <- merge(tblThinSectionDescriptionData,meso_to_macro,by = "MesoStructureID" )
+```
+
+```{r}
+tblThinSectionDescriptionData  <- merge(tblThinSectionDescriptionData,MacroStructure,by = "MacroStructureID" )
+```
+
+```{r}
+tblThinSectionDescriptionData$ThinStructureID <- seq_along(tblThinSectionDescriptionData$TSDescription)
+```
+
+```{r}
+thin_to_id <- tblThinSectionDescriptionData[,c("ThinStructureID","TSDescID")]
+```
+
+
+```{r}
+ThinStructures <- tblThinSectionDescriptionData[,c("WayptID","MacroStructureID","MesoStructureID","ThinStructureID")]
+```
+
+```{r}
+df_photo_thin <- df_photo[!is.na(df_photo$TSDescID) & df_photo$TSDescID >= 6, ]
+
+```
+
+```{r}
+df_photo_thin <- df_photo_thin[!is.na(df_photo_thin$SampleID) & !df_photo_thin$SampleID == "", ]
+```
+
+```{r}
+df_photo_thin$NewPhotoID.x = NULL
+df_photo_thin$NewPhotoID.y = NULL
+```
+
+```{r}
+ThinStructurePhotos <- df_photo_thin[,c("TSDescID","InReport","OutcropPhoto","Photomicrograph","OtherImage","CLImage" ,"OtherDocument","PhotoLinkRelative2")]
+```
+
+```{r}
+ThinStructurePhotos  <- merge(ThinStructurePhotos,thin_to_id,by = "TSDescID")
+```
+
+```{r}
+names(ThinStructurePhotos)[8] = "ReferenceLink"
+ThinStructurePhotos$TSDescID = NULL
+ThinStructurePhotos <- merge(ThinStructurePhotos, photos, by.x = "ReferenceLink",by.y = "PhotoLinkName", all.x = TRUE )
+```
+
+```{r}
+ThinStructureProperties <- tblThinSectionDescriptionData[,c("PorosityPercentEst","CementFilledPorosity","ThinStructureID")]
+```
+
+```{r}
+ThinTextureTypes <- tblTextureTypes[,1:2]
+names(ThinTextureTypes)[1] = "ThinTextureTypeID"
+ThinTextureTypes$ThinTextureTypeID <- seq_along(ThinTextureTypes$Texture)
+names(ThinTextureTypes)[2] = "Texture"
+# no need to map because thinData table does not ref textures past 7
+```
+
+
+```{r}
+temp1 <- tblThinSectionDescriptionData[, c("ThinStructureID", "PrimaryTexture")]
+temp2 <- tblThinSectionDescriptionData[, c("ThinStructureID", "SecondaryTexture")]
+
+# Rename the texture columns in both data frames to have the same name
+names(temp1)[2] <- "ThinTextureTypeID"
+names(temp2)[2] <- "ThinTextureTypeID"
+
+# Combine the two data frames
+combined <- rbind(temp1, temp2)
+```
+
+```{r}
+ThinStructureTextureTypes <- combined
+ThinStructureTextureTypes <- ThinStructureTextureTypes[!is.na(ThinStructureTextureTypes$ThinTextureTypeID),]
+```
+
+```{r}
+tblClasticGrainTypes <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblClasticGrainTypes.txt")
+```
+
+```{r}
+ClasticGrains <- tblClasticGrainTypes[,1:2]
+names(ClasticGrains)[1] = "ClasticGrainsID"
+names(ThinTextureTypes)[2] = "ClasticGrainType"
+```
+
+```{r}
+temp1 <- tblThinSectionDescriptionData[, c("ThinStructureID", "ClasticGrains1")]
+temp2 <- tblThinSectionDescriptionData[, c("ThinStructureID", "ClasticGrains2")]
+
+# Rename the texture columns in both data frames to have the same name
+names(temp1)[2] <- "ClasticGrainsID"
+names(temp2)[2] <- "ClasticGrainsID"
+
+# Combine the two data frames
+combined <- rbind(temp1, temp2)
+```
+
+```{r}
+ThinStructureClasticGrains <- combined
+```
+
+```{r}
+ThinStructureClasticGrains <- ThinStructureClasticGrains[!is.na(ThinStructureClasticGrains$ClasticGrainsID),]
+```
+
+
+```{r}
+dbWriteTable(con, "thinstructures",ThinStructures, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "thinstructurephotos",ThinStructurePhotos, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "thinstructureproperties",ThinStructureProperties, append = TRUE, row.names = FALSE)
+```
+
+
+```{r}
+# MySQL connection parameters
+dbname <- "h762lahe056bge13"  
+host <- "nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com"  
+user <- "izgrmlgwk70csp9l"  
+password <- "qpmikh9t3n3a2ekg" 
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+#dbExecute(con, "DELETE FROM photos")
+
+
+dbWriteTable(con, "thinstructuretexturetypes",ThinStructureTextureTypes, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "clasticgrains",ClasticGrains, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "thinstructureclasticgrains",ThinStructureClasticGrains, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con) 
+```
+
+```{r}
+tblCementTypes <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblCementTypes.txt")
+```
+
+```{r}
+CementTypes <- tblCementTypes[,1:3]
+names(CementTypes)[1] = "CementTypeID"
+names(CementTypes)[2] = "Cement"
+names(CementTypes)[3] = "CementDesc"
+```
+
+```{r}
+temp1 <- tblThinSectionDescriptionData[, c("ThinStructureID", "Cement1")]
+temp2 <- tblThinSectionDescriptionData[, c("ThinStructureID", "Cement2")]
+
+# Rename the texture columns in both data frames to have the same name
+names(temp1)[2] <- "CementTypeID"
+names(temp2)[2] <- "CementTypeID"
+
+# Combine the two data frames
+combined <- rbind(temp1, temp2)
+```
+
+```{r}
+ThinStructureCementTypes <- combined
+```
+
+```{r}
+ThinStructureCementTypes <- ThinStructureCementTypes[!is.na(ThinStructureCementTypes$CementTypeID),]
+```
+
+```{r}
+tblMineralogyTypes <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblMineralogyTypes.txt")
+```
+
+```{r}
+MineralogyTypes <- tblMineralogyTypes
+names(MineralogyTypes)[1] = "MineralogyID"
+names(MineralogyTypes)[2] = "Mineralogy"
+names(MineralogyTypes)[3] = "MineralogyDesc"
+
+```
+
+
+```{r}
+tblPorosityTypes <- read.csv("~/Desktop/microbialites/Microbialites Access Tables CSV/tblPorosityTypes.txt")
+```
+
+```{r}
+PorosityType <- tblPorosityTypes
+names(PorosityType)[1] = "PorosityTypeID"
+names(PorosityType)[2] = "PorosityType"
+PorosityType$Sort = NULL
+```
+
+```{r}
+temp1 <- tblThinSectionDescriptionData[, c("ThinStructureID", "Mineralogy1")]
+temp2 <- tblThinSectionDescriptionData[, c("ThinStructureID", "Mineralogy2")]
+
+# Rename the texture columns in both data frames to have the same name
+names(temp1)[2] <- "MineralogyID"
+names(temp2)[2] <- "MineralogyID"
+
+# Combine the two data frames
+combined <- rbind(temp1, temp2)
+```
+
+```{r}
+ThinStructureMineralogyTypes <- combined
+ThinStructureMineralogyTypes <- ThinStructureMineralogyTypes[!is.na(ThinStructureMineralogyTypes$MineralogyID),]
+```
+
+```{r}
+temp1 <- tblThinSectionDescriptionData[, c("ThinStructureID", "Porosity1")]
+temp2 <- tblThinSectionDescriptionData[, c("ThinStructureID", "Porosity2")]
+
+# Rename the texture columns in both data frames to have the same name
+names(temp1)[2] <- "PorosityTypeID"
+names(temp2)[2] <- "PorosityTypeID"
+
+# Combine the two data frames
+combined <- rbind(temp1, temp2)
+```
+
+```{r}
+ThinStructurePorosityType <- combined
+ThinStructurePorosityType <- ThinStructurePorosityType[!is.na(ThinStructurePorosityType$PorosityTypeID),]
+```
+
+```{r}
+names(MineralogyTypes)[3] = "MineralDesc"
+```
+
+```{r}
+names(PorosityType)[2] = "Porosity"
+PorosityType$Sort = NULL
+```
+
+
+```{r}
+# MySQL connection parameters
+dbname <- "h762lahe056bge13"  
+host <- "nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com"  
+user <- "izgrmlgwk70csp9l"  
+password <- "qpmikh9t3n3a2ekg" 
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+#dbExecute(con, "DELETE FROM photos")
+
+
+#dbWriteTable(con, "cementtypes",CementTypes, append = TRUE, row.names = FALSE)
+#dbWriteTable(con, "thinstructurecementtypes",ThinStructureCementTypes, append = TRUE, row.names = FALSE)
+#dbWriteTable(con, "mineralogytypes",MineralogyTypes, append = TRUE, row.names = FALSE)
+#dbWriteTable(con, "thinttructuremineralogytypes",ThinStructureMineralogyTypes, append = TRUE, row.names = FALSE)
+#dbWriteTable(con, "porositytype",PorosityType, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "thinstructureporositytype",ThinStructurePorosityType, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con) 
+```
+
+
+```{r}
+# MySQL connection parameters
+dbname <- "h762lahe056bge13"  
+host <- "nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com"  
+user <- "izgrmlgwk70csp9l"  
+password <- "qpmikh9t3n3a2ekg" 
+
+# Connect to your MySQL database
+con <- dbConnect(RMySQL::MySQL(), dbname = dbname, host = host, 
+                 user = user, password = password)
+
+#dbExecute(con, "DELETE FROM photos")
+
+
+dbWriteTable(con, "planview",PlainView, append = TRUE, row.names = FALSE)
+
+# Close the connection
+dbDisconnect(con) 
+```
+
+
 
