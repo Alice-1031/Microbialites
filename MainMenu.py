@@ -1,8 +1,23 @@
+import mysql.connector
+from mysql.connector import Error
 from qryClasticGrainTypesSorted import *
+from qryImagereport import *
+from qryMacrostructureDataSorted import *
+from qryMacrostructurePhotoReport import *
+from qryMacrostructurePhotosSorted import *
+from qryMacrostructureTypesSorted import *
+from qryMakeAMesostructureReport import *
+from qryMesostructureDataSorted import *
+from qryMesostructurePhotosWThinSections import *
+from qryMesostructureTexturesSorted import *
+from qryMesostructureTypesSorted import *
+from qryPhotoLinksDataSorted import *
+from qryPhotosBySampleID import *
+from qryPhotosBySampleIDWThinSections import *
+from qryPriorityListForAnalysis import *
+from qryThinSectionPhotosSorted import *
 
 # The main menu our users will use to interact with the Database
-
-# Main menu to choose what to do
 def main_menu():
     while True:
         print("\n-------------Main Menu-------------")
@@ -20,7 +35,8 @@ def main_menu():
         elif choice == '2':
             query_menu()
         elif choice == '3':
-            print("Please visit TDx and create a ticket")
+            print("Please visit TDx and create a ticket or give us a call and we \n"
+                    + "will troubleshoot with you and create a ticket on your behalf")
         elif choice == '4':
             print("Exiting program.")
             break
@@ -54,6 +70,7 @@ def add_menu():
         choice = input("Enter choice: ")
 
         if choice == '1':
+            from WaypointForm import insertWaypoint_method
             insertWaypoint_method()
             main_menu()
         elif choice == '2':
