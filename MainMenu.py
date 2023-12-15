@@ -11,7 +11,10 @@ def main_menu():
         choice = input("Enter choice: ")
 
         if choice == '1':
-            add_menu()
+            if login():
+                add_menu()
+            else:
+                print("Invalid login. Access denied.")
         elif choice == '2':
             query_menu()
         elif choice == '3':
@@ -21,6 +24,21 @@ def main_menu():
             break
         else:
             print("Invalid choice. Please enter 1-4.")
+
+
+# User credentials (username: password)
+user_credentials = {
+    'user1': 'Password123',
+    'admin': 'adminPass',
+    # Add more users as needed
+}
+
+# User must log in to change the data
+def login():
+    username = input("Enter username: ").lower()  # Lowercase for non-case sensitive comparison
+    password = input("Enter password: ")  # Case sensitive
+    return user_credentials.get(username) == password
+
 
 # Add and insert data menu
 def add_menu():
