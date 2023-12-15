@@ -21,7 +21,6 @@ CREATE TABLE MesoStructurePhotos (
     CLImage BOOLEAN,
     OtherDocument BOOLEAN,
     RefrenceLink VARCHAR(255) NOT NULL,
-<<<<<<< HEAD
     PRIMARY KEY (MacroStructureID, PhotoID),
     FOREIGN KEY (MacroStructureID) REFERENCES MacroStructure(MacroStructureID) ON DELETE CASCADE,
     FOREIGN KEY (WaypointID) REFERENCES Waypoint(WayptID) ON DELETE CASCADE
@@ -96,11 +95,9 @@ CREATE TABLE MesoStructureProperties (
     FOREIGN KEY (MesoClotTypeID) REFERENCES MesoClotType (MesoClotTypeID) ON DELETE SET NULL,
     FOREIGN KEY (MesoClotShapeID) REFERENCES MesoClotShape (MesoClotShapeID) ON DELETE SET NULL
 
-=======
     PRIMARY KEY (MesoStructureID, PhotoID),
     FOREIGN KEY (MesoStructureID) REFERENCES MesoStructure(MesoStructureID) ON DELETE CASCADE,
     FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID) ON DELETE CASCADE
->>>>>>> 52a8a9a (Final updates to ddl files complete with cascades)
 );
 
 CREATE TABLE InternationalSampleNumber(
