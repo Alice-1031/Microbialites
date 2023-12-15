@@ -16,17 +16,20 @@ cursor = conn.cursor()
 
 qry = '''
 SELECT
-    ms.MesoStructureID,
+    mst.MesoStructure,
     tt.MesoStructureTextureType,
+    ms.MesoStructureID,
     p.PhotoLinkName
 FROM 
     MesoStructure ms
-JOIN 
+LEFT JOIN 
     MesoStructurePhotos msp ON ms.MesoStructureID = msp.MesoStructureID
-JOIN 
+RIGHT JOIN 
     Photos p ON msp.PhotoID = p.PhotoID
-JOIN 
+LEFT JOIN 
     TextureType tt ON ms.MesoStructureID = tt.TextureTypeID
+RIGHT JOIN
+    MesoStructureType mst ON ms.MesoStructureID = mst.MesoStructureTypeID
 ORDER BY
     ms.MesoStructureID;
 '''
