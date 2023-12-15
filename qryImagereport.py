@@ -1,4 +1,3 @@
-import sqlite3
 import mysql.connector
 
 # JawsDB MySQL connection details
@@ -14,26 +13,22 @@ db_config = {
 conn = mysql.connector.connect(**db_config)
 cursor = conn.cursor()
 
-while True:
-    try:
-        ClasticGrainsID = input("Enter What Clastic Grains ID Info You Want:")
-        ClasticGrainsID = int(ClasticGrainsID)
-        break
-    except ValueError:
-        print("Entry Must Be An Integer!")
-
-ClasticGrainsID = str(ClasticGrainsID)
-print("You Entered: " + ClasticGrainsID)
 
 qry = '''
 SELECT
-    ClasticGrainsID,
-    ClasticGrainType,
-    Sort
-FROM
-    ClasticGrains
+    ms.MesoStructureID,
+    tt.MesoStructureTextureType,
+    p.PhotoLinkName
+FROM 
+    MesoStructure ms
+JOIN 
+    MesoStructurePhotos msp ON ms.MesoStructureID = msp.MesoStructureID
+JOIN 
+    Photos p ON msp.PhotoID = p.PhotoID
+JOIN 
+    TextureType tt ON ms.MesoStructureID = tt.TextureTypeID
 ORDER BY
-    Sort;
+    ms.MesoStructureID;
 '''
 
 cursor.execute(qry)
