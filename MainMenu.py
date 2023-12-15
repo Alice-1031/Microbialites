@@ -74,10 +74,11 @@ def add_menu():
             insertWaypoint_method()
             main_menu()
         elif choice == '2':
-            insertMacro_method()
+            insertMeso_method()
             main_menu()
         elif choice == '3':
-            insertMeso_method()
+            from MacroStructureForm import insertMacro_method
+            insertMacro_method()
             main_menu()
         elif choice == '4':
             insertThin_method()
