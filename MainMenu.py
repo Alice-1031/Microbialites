@@ -1,9 +1,11 @@
+from qryClasticGrainTypesSorted import *
+
 # The main menu our users will use to interact with the Database
 
 # Main menu to choose what to do
 def main_menu():
     while True:
-        print("\nMain Menu")
+        print("\n-------------Main Menu-------------")
         print("1. Add/Insert data")
         print("2. Run a Query")
         print("3. Customer Support")
@@ -43,7 +45,7 @@ def login():
 # Add and insert data menu
 def add_menu():
     while True:
-        print("\nAdd/Insert Sub-Menu")
+        print("\n-------------Add/Insert Sub-Menu-------------")
         print("1. Waypoint")
         print("2. Mesostructure")
         print("3. Macrostructure")
@@ -53,12 +55,16 @@ def add_menu():
 
         if choice == '1':
             insertWaypoint_method()
+            main_menu()
         elif choice == '2':
             insertMacro_method()
+            main_menu()
         elif choice == '3':
             insertMeso_method()
+            main_menu()
         elif choice == '4':
             insertThin_method()
+            main_menu()
         elif choice == '5':
             break
         else:
@@ -68,7 +74,7 @@ def add_menu():
 # Queries menu
 def query_menu():
     while True:
-        print("\nQuery Sub-Menu")
+        print("\n-------------Query Sub-Menu-------------")
         print("1. Clastic Grains Types Sorted")
         print("2. Image Report")
         print("3. Macrostructure Data Sorted")
@@ -87,42 +93,60 @@ def query_menu():
         print("16. Thin Section Photos Sorted")
         print("17. Waypoint Data Sorted")
         print("18. Back to Main Menu")
-        choice = input("Enter choice: ")
+        choice = input("\nEnter choice: ")
+        print("\n")
 
         if choice == '1':
             qryClasticGrainsTypesSorted()
+            main_menu()
         elif choice == '2':
             qryImageReport()
+            main_menu()
         elif choice == '3':
             qryMacroDataSorted()
+            main_menu()
         elif choice == '4':
             qryMacroPhotoReport()
+            main_menu()
         elif choice == '5':
             qryMacroPhotosSorted()
+            main_menu()
         elif choice == '6':
             qryMacroTypesSorted()
+            main_menu()
         elif choice == '7':
             qryMakeAMesoReport()
+            main_menu()
         elif choice == '8':
             qryMesoDataSorted()
+            main_menu()
         elif choice == '9':
             qryMesoPhotosWThinSections()
+            main_menu()
         elif choice == '10':
             qryMesoTexturesSorted()
+            main_menu()
         elif choice == '11':
             qryMesoTypesSorted()
+            main_menu()
         elif choice == '12':
             qryPhotoLinksDataSorted()
+            main_menu()
         elif choice == '13':
             qryPhotosbySampleID()
+            main_menu()
         elif choice == '14':
             qryPhotosbySampleIDWThin()
+            main_menu()
         elif choice == '15':
             qryPriorityListforAnalysis()
+            main_menu()
         elif choice == '16':
             qryThinSectionPhotosSorted()
+            main_menu()
         elif choice == '17':
             qryWaypointDataSorted()
+            main_menu()
         elif choice == '18':
             break
         else:
