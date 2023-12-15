@@ -30,7 +30,7 @@ SELECT
     gt.GrainType, -- from MesoGrainType
     msph.OutcropPhoto, -- from MesoStructurePhotos
     p.PhotoLinkName, -- from MesoStructurePhotos
-    OtherImage, -- from MesoStructurePhotos
+    OtherImage -- from MesoStructurePhotos
 FROM 
     MesoStructureProperties msp
 LEFT JOIN MesoStructureTextureTypes mstt ON msp.MesoStructureID = mstt.MesoStructureID
