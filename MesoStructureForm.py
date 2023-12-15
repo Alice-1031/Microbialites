@@ -63,16 +63,11 @@ try:
     ))
 
     # commit and close connection
-    conn.commit()
-    conn.close()
+    cursor.commit()
 
     print(addMesoStructureQuery)
 
     #MesoStructureProperties
-
-    #opens connection and creates cursor
-    conn = sqlite3.connect('filler.db')
-    cursor = conn.cursor()
 
     # MesoStructureID Input
     while True:
@@ -165,17 +160,11 @@ try:
         MesoInheritanceID, MesoStructureTypeID, MesoStructureLaminaID
     ))
 
-    # commit and close connection
-    conn.commit()
-    conn.close()
-
+    cursor.commit()
+    
     print(addMesoStructurePropertiesQuery)
 
     #MesoStructurePhotos
-
-    #opens connection and creates cursor
-    conn = sqlite3.connect('filler.db')
-    cursor = conn.cursor()
 
     # MesoStructureID Input
     while True:
@@ -283,7 +272,7 @@ try:
     ))
 
     # commit and close connection
-    conn.commit()
+    cursor.commit()
 
     print(addMesoStructurePhotosQuery)
 
