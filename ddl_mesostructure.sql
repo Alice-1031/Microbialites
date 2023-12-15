@@ -1,9 +1,11 @@
 USE microbialites;
 
 CREATE TABLE MesoStructure (
-    MesoStructureID INT PRIMARY KEY,
-    WayptID INT,
-    FOREIGN KEY (WayptID) REFRENCES Waypoint(WayptID)
+    MesoStructureID INT PRIMARY KEY auto_increment,
+    MacroStructureID INT NOT NULL,
+    WayptID INT NOT NULL,
+    FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID) ON DELETE CASCADE ,
+    FOREIGN KEY(MacrostructureID) REFERENCES MacroStructure(MacrostructureID) ON DELETE CASCADE 
 );
 
 
@@ -11,7 +13,7 @@ CREATE TABLE MesoStructurePhotos (
     MesoStructureID INT,
     PhotoID INT,
     WayptID INT,
-    MacroStructureID,
+    MacroStructureID INT,
     InReport BOOLEAN, 
     OutcropPhoto BOOLEAN,
     Photomicrograph BOOLEAN,
@@ -19,6 +21,7 @@ CREATE TABLE MesoStructurePhotos (
     CLImage BOOLEAN,
     OtherDocument BOOLEAN,
     RefrenceLink VARCHAR(255) NOT NULL,
+<<<<<<< HEAD
     PRIMARY KEY (MacroStructureID, PhotoID),
     FOREIGN KEY (MacroStructureID) REFERENCES MacroStructure(MacroStructureID) ON DELETE CASCADE,
     FOREIGN KEY (WaypointID) REFERENCES Waypoint(WayptID) ON DELETE CASCADE
@@ -93,94 +96,88 @@ CREATE TABLE MesoStructureProperties (
     FOREIGN KEY (MesoClotTypeID) REFERENCES MesoClotType (MesoClotTypeID) ON DELETE SET NULL,
     FOREIGN KEY (MesoClotShapeID) REFERENCES MesoClotShape (MesoClotShapeID) ON DELETE SET NULL
 
+=======
+    PRIMARY KEY (MesoStructureID, PhotoID),
+    FOREIGN KEY (MesoStructureID) REFERENCES MesoStructure(MesoStructureID) ON DELETE CASCADE,
+    FOREIGN KEY (WayptID) REFERENCES Waypoint(WayptID) ON DELETE CASCADE
+>>>>>>> 52a8a9a (Final updates to ddl files complete with cascades)
 );
 
 CREATE TABLE InternationalSampleNumber(
-
     MesoStructureID INT PRIMARY KEY,
-    IGSNInt1GeoSampleNumberID INT,
-    FOREIGN KEY (MesoStructureID) REFERENCES  MesoStructure (MesoStructureID)
+    IGSNIntlGeoSampleNumber INT,
+    FOREIGN KEY (MesoStructureID) REFERENCES  MesoStructure (MesoStructureID) ON DELETE CASCADE
+);
 
+CREATE TABLE MesoStructureSampleName(
+	MesoStructureID INT PRIMARY KEY,
+    MesoStructureName VARCHAR(100) UNIQUE,
+    FOREIGN KEY (MesoStructureID) REFERENCES  MesoStructure (MesoStructureID) ON DELETE CASCADE
+);
+
+CREATE TABLE TextureType (
+    TextureTypeID INT PRIMARY KEY auto_increment,
+	MesoStructureTextureType VARCHAR(100)
 );
 
 CREATE TABLE MesoStructureTextureTypes (
-
     MesoStructureID INT,
-    TextureTypesID INT,
-    Desciption VARCHAR(30),
+    TextureTypeID INT,
     PRIMARY KEY (MesoStructureID, TextureTypeID),
-    FOREIGN KEY (MesoStructureID) REFERENCES MesoStructure (MesoStructureID),
-    FOREIGN KEY (TextureTypeID) REFERENCES TextureType (TextureTypeID)
+    FOREIGN KEY (MesoStructureID) REFERENCES MesoStructure (MesoStructureID) ON DELETE CASCADE,
+    FOREIGN KEY (TextureTypeID) REFERENCES TextureType (TextureTypeID) ON DELETE CASCADE
+);
+
+CREATE TABLE Architecture (
+    ArchitectureID INT PRIMARY KEY auto_increment,
+    ArchitectureType VARCHAR(100)
 );
 
 CREATE TABLE MesoStructureArchitecture (
-
     MesoStructureID INT,
     ArchitectureID INT,
-    Desciption VARCHAR(30),
     PRIMARY KEY (MesoStructureID, ArchitectureID),
-    FOREIGN KEY (MesoStructureID) REFERENCES MesoStructure (MesoStructureID),
-    FOREIGN KEY (ArchitectureID) REFERENCES Architecture (ArchitectureID)
+    FOREIGN KEY (MesoStructureID) REFERENCES MesoStructure (MesoStructureID) ON DELETE CASCADE,
+    FOREIGN KEY (ArchitectureID) REFERENCES Architecture (ArchitectureID) ON DELETE CASCADE
 );
 
 CREATE TABLE MesoGrainType (
-
     GrainTypeID INT PRIMARY KEY,
-    GrainType VARCHAR(20)
-);
-
-CREATE TABLE GeneralType (
-
-    GeneralTypeID INT PRIMARY KEY,
-    MesoStructure VARCHAR(20)
+    GrainType VARCHAR(100)
 );
 
 CREATE TABLE ThinSectionPriority(
-
-    ThinSectionPriorityID INT PRIMARY KEY,
-    PriorityType VARCHAR(20)
+    ThinSectionPriorityID INT PRIMARY KEY auto_increment,
+    PriorityType VARCHAR(50)
 );
 
 CREATE TABLE MesoInheritance(
-
     MesoInheritanceID INT PRIMARY KEY,
-    Inheritance VARCHAR(20)
+    Inheritance VARCHAR(50)
 );
 
 CREATE TABLE MesoStructureType (
-
    MesoStructureTypeID INT PRIMARY KEY,
-   MesoStructure VARCHAR(20)
-);
-
-CREATE TABLE MesoStructureLamina (
-
-    MesoStructureLaminaID INT PRIMARY KEY,
-    LaminaThickness VARCHAR(20),
-    LaminaProfile VARCHAR(20)
+   Mesostructure VARCHAR(50)
 );
 
 CREATE TABLE MesoStructureLaminaPattern (
-
     MesoStructureLaminaPatternID INT PRIMARY KEY,
-    PatternCouplet VARCHAR(20)
+    PatternCouplet VARCHAR(50)
 );
 
 CREATE TABLE MesoStackingOverlap (
-
     MesoStackingOverlapID INT PRIMARY KEY,
     StackingOverlap VARCHAR(20)
 
 );
 
 CREATE TABLE MesoAlternation (
-
     MesoAlterationID INT PRIMARY KEY,
-    Alteration VARCHAR(20)
+    Alternation VARCHAR(20)
 );
 
 CREATE TABLE MesoWaviness (
-
     MesoWavinessID INT PRIMARY KEY,
     Waviness VARCHAR(20)
 );
@@ -194,7 +191,7 @@ CREATE TABLE MesoModalitySkewness (
 CREATE TABLE MesoLaminaProfile (
 
     MesoLaminaProfileID INT PRIMARY KEY,
-    LaminaProfile VARCHAR(20)
+    LamProfile VARCHAR(20)
 );
 
 CREATE TABLE MesoSynopticRelief (
@@ -203,11 +200,10 @@ CREATE TABLE MesoSynopticRelief (
     SynopticRelief VARCHAR(20)
 );
 
-#Im not sure if field was correct
-CREATE TABLE MesoLaminaIneritance (
 
+CREATE TABLE MesoLaminaInheritance (
     MesoLaminaInheritanceID INT PRIMARY KEY,
-    FIELD1 VARCHAR(20)
+    Inheritance VARCHAR(20)
 );
 
 CREATE TABLE MesoLateralContinuity (
@@ -217,35 +213,22 @@ CREATE TABLE MesoLateralContinuity (
 );
 
 CREATE TABLE MesoWalls (
-
     MesoWallsID INT PRIMARY KEY,
     Walls VARCHAR(20)
 );
 
 CREATE TABLE MesoMacroLaminae (
-
     MesoMacroLaminaeID INT PRIMARY KEY,
     MacroLaminae VARCHAR (20)
 );
 
-CREATE TABLE Architecture (
-
-    ArchitectureID INT PRIMARY KEY,
-    ArchitectureType VARCHAR(20)
-);
 
 CREATE TABLE MesoLaminaShape (
-
     MesoLaminaShapeID INT PRIMARY KEY,
     LaminaShape VARCHAR(20),
-    Description VARCHAR(20)
+    Description VARCHAR(100)
 );
 
-CREATE TABLE TextureType (
-
-    TextureTypeID INT PRIMARY KEY,
-    MesoStructureTextureType VARCHAR(20)
-);
 
 CREATE TABLE MesoClotType (
 
@@ -257,5 +240,76 @@ CREATE TABLE MesoClotShape (
 
     MesoClotShapeID INT PRIMARY KEY,
     ClotShape VARCHAR(20)
+);
+
+
+CREATE TABLE Priority(
+	ID INT auto_increment PRIMARY KEY,
+    Priority VARCHAR(50)
+);
+
+CREATE TABLE MesoStructureProperties (
+
+    MesoStructureID INT PRIMARY KEY,
+    GrainTypeID INT,
+    ThinSectionPriorityID INT,
+    MesoInheritanceID INT,
+    MesoStructureLaminaPatternID INT,
+    MesoStackingOverlapID INT,
+    MesoAlterationID INT,
+    MesoWavinessID INT,
+    MesoModalityID INT,
+    MesoLaminaProfileID INT,
+    LaminaThickness DECIMAL(5,2),
+    MesoSynopticReliefID INT,
+    MesoLaminaInheritanceID INT,
+    MesoLateralContinuityID INT, 
+    MesoWallsID INT,
+    MesoMacroLaminaeID INT,
+    MesoLaminaShapeID INT,
+    MesoStructureTypeID INT,
+    MesoClotShapeID INT,
+    MesoClotSize DECIMAL(5,2),
+    InTheFRUInterval BOOLEAN,
+    AnalysisPriority INT,
+    MacroStructureID INT,
+    FieldDescription VARCHAR (100), 
+    Lithology VARCHAR(20),
+    RockDescription VARCHAR(100),
+    SampleSize VARCHAR(100),
+    PeelAndSEMPriority VARCHAR(15),
+    ThinSectionMade BOOLEAN,
+    C_N_Priority INT,
+    Wavelength FLOAT,
+    AmplitudeOrHeight FLOAT,
+    MicrobialiteType VARCHAR(20),
+    MesoClotTypeID INT,
+    BriefNotes VARCHAR(100),
+    FOREIGN KEY (MesoStructureID) REFERENCES MesoStructure (MesoStructureID) ON DELETE CASCADE,
+    FOREIGN KEY (GrainTypeID) REFERENCES MesoGrainType (GrainTypeID) ON DELETE SET NULL,
+    FOREIGN KEY (ThinSectionPriorityID) REFERENCES ThinSectionPriority (ThinSectionPriorityID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoInheritanceID) REFERENCES MesoInheritance (MesoInheritanceID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoStructureTypeID) REFERENCES MesoStructureType (MesoStructureTypeID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoStructureLaminaPatternID) REFERENCES MesoStructureLaminaPattern (MesoStructureLaminaPatternID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoStackingOverlapID) REFERENCES MesoStackingOverlap (MesoStackingOverlapID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoAlterationID) REFERENCES MesoAlternation (MesoAlterationID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoWavinessID) REFERENCES MesoWaviness (MesoWavinessID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoModalityID) REFERENCES MesoModalitySkewness (MesoModalityID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoStackingOverlapID) REFERENCES MesoStackingOverlap (MesoStackingOverlapID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoWavinessID) REFERENCES MesoWaviness (MesoWavinessID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoLaminaProfileID) REFERENCES MesoLaminaProfile (MesoLaminaProfileID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoSynopticReliefID) REFERENCES MesoSynopticRelief (MesoSynopticReliefID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoLaminaInheritanceID) REFERENCES MesoLaminaInheritance (MesoLaminaInheritanceID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoLateralContinuityID) REFERENCES MesoLateralContinuity (MesoLateralContinuityID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoWallsID) REFERENCES MesoWalls(MesoWallsID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoMacroLaminaeID) REFERENCES MesoMacroLaminae (MesoMacroLaminaeID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoLaminaShapeID) REFERENCES MesoLaminaShape (MesoLaminaShapeID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoStructureTypeID) REFERENCES MesoStructureType (MesoStructureTypeID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoMacroLaminaeID) REFERENCES MesoMacroLaminae (MesoMacroLaminaeID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoLaminaShapeID) REFERENCES MesoLaminaShape (MesoLaminaShapeID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoClotTypeID) REFERENCES MesoClotType (MesoClotTypeID) ON DELETE SET NULL,
+    FOREIGN KEY (MesoClotShapeID) REFERENCES MesoClotShape (MesoClotShapeID) ON DELETE SET NULL,
+    FOREIGN KEY(AnalysisPrioriy) REFERENCES Priority (ID) ON DELETE SET NULL,
+    FOREIGN KEY(MacroStructureID) REFERENCES MacroStructure(MacroStructureID) ON DELETE CASCADE
 );
 
