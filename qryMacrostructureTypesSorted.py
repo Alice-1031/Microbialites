@@ -1,17 +1,18 @@
-import sqlite3
+import mysql.connector
 
+# JawsDB MySQL connection details
+db_config = {
+    'user': 'izgrmlgwk70csp9l',  # Your JawsDB username
+    'password': 'qpmikh9t3n3a2ekg',  # Your JawsDB password
+    'host': 'nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',  # Your JawsDB host
+    'database': 'h762lahe056bge13',  # Your JawsDB database name
+    'port': 3306
+}
 
+# Open connection and create cursor
+conn = mysql.connector.connect(**db_config)
+cursor = conn.cursor()
 
-while True:
-    try:
-        MacroStructureTypesID = input("Enter What Macrostructure Type ID Info You Want:")
-        MacroStructureTypesID = int(MacroStructureTypesID)
-        break
-    except ValueError:
-        print("Entry Must Be An Integer!")
-
-MacroStructureTypesID = str(MacroStructureTypesID)
-print("You Entered: " + MacroStructureTypesID)
 
 qry = '''
 SELECT

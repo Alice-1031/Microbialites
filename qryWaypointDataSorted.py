@@ -1,9 +1,3 @@
-import sqlite3
-
-#opens connection and creates cursor
-#conn = sqlite3.connect('filler.db')
-#cursor = conn.cursor()
-
 import mysql.connector
 
 # JawsDB MySQL connection details
@@ -19,16 +13,6 @@ db_config = {
 conn = mysql.connector.connect(**db_config)
 cursor = conn.cursor()
 
-while True:
-    try:
-        WayptID = input("Enter What Waypoint ID Info You Want:")
-        WayptID = int(WayptID)
-        break
-    except ValueError:
-        print("Entry Must Be An Integer!")
-
-WayptID = str(WayptID)
-print("You Entered: " + WayptID)
 
 qry = '''
 SELECT

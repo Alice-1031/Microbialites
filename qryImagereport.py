@@ -14,6 +14,17 @@ db_config = {
 conn = mysql.connector.connect(**db_config)
 cursor = conn.cursor()
 
+while True:
+    try:
+        ClasticGrainsID = input("Enter What Clastic Grains ID Info You Want:")
+        ClasticGrainsID = int(ClasticGrainsID)
+        break
+    except ValueError:
+        print("Entry Must Be An Integer!")
+
+ClasticGrainsID = str(ClasticGrainsID)
+print("You Entered: " + ClasticGrainsID)
+
 qry = '''
 SELECT
     ClasticGrainsID,

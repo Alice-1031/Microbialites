@@ -1,4 +1,3 @@
-import sqlite3
 import mysql.connector
 
 # JawsDB MySQL connection details
@@ -14,16 +13,6 @@ db_config = {
 conn = mysql.connector.connect(**db_config)
 cursor = conn.cursor()
 
-while True:
-    try:
-        TextureTypeID = input("Enter What Meso Texture Type ID Info You Want:")
-        TextureTypeID = int(TextureTypeID)
-        break
-    except ValueError:
-        print("Entry Must Be An Integer!")
-
-TextureTypeID = str(TextureTypeID)
-print("You Entered: " + TextureTypeID)
 
 qry = '''
 SELECT
