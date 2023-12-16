@@ -1,11 +1,20 @@
 USE microbialites;
 
-CREATE TABLE User (
+CREATE TABLE ID (
     UserID INT PRIMARY KEY,
     LogInID VARCHAR(255) UNIQUE,
     HashedPassword VARCHAR(255) NOT NULL,
     RoleID INT,
     FOREIGN KEY (RoleID) REFERENCES UserRole(RoleID)
+);
+
+CREATE TABLE SupportTickets (
+    TicketID INT AUTO_INCREMENT PRIMARY KEY,
+    UserName VARCHAR(255) NOT NULL,
+    ContactInfo VARCHAR(255) NOT NULL,
+    IssueDescription TEXT NOT NULL,
+    Status VARCHAR(50) NOT NULL DEFAULT 'Open',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE UserInteractions (
@@ -14,7 +23,7 @@ CREATE TABLE UserInteractions (
     InteractionTimeStamp DATETIME NOT NULL,
     SubEntityType VARCHAR(255),
     SubEntityID INT,
-    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (UserID) REFERENCES ID(UserID),
     FOREIGN KEY (SubEntityID) REFERENCES Waypoint(SubEntityID)
 );
 
@@ -24,8 +33,8 @@ CREATE TABLE CustomerSupport (
     AssignedToUserID INT,
     Description TEXT,
     Status VARCHAR(50) NOT NULL,
-    FOREIGN KEY (UserID) REFERENCES User(UserID),
-    FOREIGN KEY (AssignedToUserID) REFERENCES User(UserID)
+    FOREIGN KEY (UserID) REFERENCES ID(UserID),
+    FOREIGN KEY (AssignedToUserID) REFERENCES ID(UserID)
 );
 
 CREATE TABLE UserRole (
@@ -34,7 +43,7 @@ CREATE TABLE UserRole (
     Description TEXT,
     DateAssigned DATE,
     PRIMARY KEY (UserID, RoleID),
-    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (UserID) REFERENCES ID(UserID),
     FOREIGN KEY (RoleID) REFERENCES Role(RoleID)
 );
 

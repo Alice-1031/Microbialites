@@ -46,8 +46,7 @@ def main_menu():
         elif choice == '2':
             query_menu()
         elif choice == '3':
-            print("Please visit TDx and create a ticket or give us a call and we \n"
-                    + "will troubleshoot with you and create a ticket on your behalf")
+            create_support_ticket()
         elif choice == '4':
             if login():
                 delete_menu()
@@ -211,6 +210,7 @@ def delete_menu():
         else:
             print("Invalid choice. Please enter 1-5.")
 
+# Delete
 def delete_structure(table, id_column):
     try:
         structure_id = int(input(f"Enter the ID of the {table} to delete: "))
@@ -245,6 +245,32 @@ def execute_query(query, params):
     except mysql.connector.Error as err:
         print(f"Error occurred: {err}")
 
+#create ticket
+def create_support_ticket():
+    print("\n--- Customer Support Ticket Creation ---")
+    user_name = input("Enter your name: ")
+    contact_info = input("Enter your contact information: ")
+    issue_description = input("Describe your issue: ")
+
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        insert_query = '''
+        INSERT INTO SupportTickets (UserName, ContactInfo, IssueDescription)
+        VALUES (%s, %s, %s)
+        '''
+        cursor.execute(insert_query, (user_name, contact_info, issue_description))
+        conn.commit()
+        print("Support ticket created successfully.")
+
+    except mysql.connector.Error as err:
+        print(f"Error occurred: {err}")
+
+    finally:
+        if conn.is_connected():
+            cursor.close()
+            conn.close()
 
 # Run the main menu
 main_menu()
