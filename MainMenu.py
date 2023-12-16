@@ -18,6 +18,7 @@ from queries.qryPriorityListForAnalysis import *
 from queries.qryThinSectionPhotosSorted import *
 from queries.qryWaypointDataSorted import *
 
+
 db_config = {
         'user': 'izgrmlgwk70csp9l',  # Your JawsDB username
         'password': 'qpmikh9t3n3a2ekg',  # Your JawsDB password
@@ -89,6 +90,7 @@ def add_menu():
             insertWaypoint_method()
             main_menu()
         elif choice == '2':
+            from forms.MacroStructureForm import insertMeso_method
             insertMeso_method()
             main_menu()
         elif choice == '3':
@@ -96,6 +98,7 @@ def add_menu():
             insertMacro_method()
             main_menu()
         elif choice == '4':
+            from forms.ThinStructureForm import insertThin_method
             insertThin_method()
             main_menu()
         elif choice == '5':
