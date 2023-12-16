@@ -1,4 +1,5 @@
 import mysql.connector
+from prettytable import PrettyTable
 
 def qryMesoPhotosWThinSections():
 
@@ -40,8 +41,26 @@ def qryMesoPhotosWThinSections():
 
     cursor.execute(qry)
 
+    # Create a PrettyTable
+    table = PrettyTable()
+    table.field_names = ["MesoStructureID", "Mesostructure", "ThinSectionMade", "PhotoLinkName", "Northing", "Easting", "MesoStructureTextureType"]
+    table.max_width = 20  # Set max width of columns
+    table.align = "l"     # Align text to the left
+
     for row in cursor.fetchall():
-        print(row)
-        #print(", ".join(map(str, row)))
+        # Format boolean values for better readability
+        formatted_row = [
+            row[0], 
+            row[1], 
+            'Yes' if row[2] else 'No',
+            row[3],
+            row[4],
+            row[5],
+            row[6]
+        ]
+        table.add_row(formatted_row)
 
     cursor.close()
+    conn.close()
+
+    print(table)

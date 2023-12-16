@@ -1,4 +1,5 @@
 import mysql.connector
+from prettytable import PrettyTable
 
 def qryMesoTexturesSorted():
 
@@ -28,8 +29,16 @@ def qryMesoTexturesSorted():
 
     cursor.execute(qry)
 
+    # Create a PrettyTable
+    table = PrettyTable()
+    table.field_names = ["TextureTypeID", "MesoStructureTextureType"]
+    table.max_width = 50  # Set max width of columns
+    table.align = "l"     # Align text to the left
+
     for row in cursor.fetchall():
-        print(row)
-        #print(", ".join(map(str, row)))
+        table.add_row(row)
 
     cursor.close()
+    conn.close()
+
+    print(table)

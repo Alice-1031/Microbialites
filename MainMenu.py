@@ -1,4 +1,5 @@
 import mysql.connector
+from prettytable import PrettyTable
 from mysql.connector import Error
 from queries.qryClasticGrainTypesSorted import *
 from queries.qryImagereport import *
@@ -56,7 +57,7 @@ def main_menu():
             print("Exiting program.")
             exit()
         else:
-            print("Invalid choice. Please enter 1-4.")
+            print("Invalid choice. Please enter 1-5.")
 
 
 # User credentials (username: password)
@@ -195,14 +196,18 @@ def delete_menu():
 
         if choice == '1':
             delete_waypoint()
+            main_menu()
         elif choice == '2':
             delete_mesostructure()
+            main_menu()
         elif choice == '3':
             delete_macrostructure()
+            main_menu()
         elif choice == '4':
             delete_thin_structure()
+            main_menu()
         elif choice == '5':
-            break
+            main_menu()
         else:
             print("Invalid choice. Please enter 1-5.")
 
